@@ -20,6 +20,7 @@
     "@uiw/codemirror-theme-noctis-lilac": "^4.21.22",
     "@uiw/codemirror-themes": "^4.21.22",
     "@uiw/react-codemirror": "^4.21.22",
+    "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide": "^0.344.0",
