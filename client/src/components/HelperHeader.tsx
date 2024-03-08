@@ -1,5 +1,5 @@
 import { Button } from './ui/button'
-import { Save, Share2 } from 'lucide-react'
+import { Code, Copy, Loader2, Save, Share2 } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -12,27 +12,90 @@ import { CompilerInitialState, updatedLanguage } from '@/redux/slices/ComplierSl
 import { RootState } from '@/redux/store'
 import { handleError } from '@/utils/handleError'
 import axios from "axios";
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { toast } from 'sonner'
+
 
 export const HelperHeader = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [shareData, setShareData] = useState(false);
   const currentlanguage = useSelector((state: RootState) => state.ComplierSlice.currentlanguage)
   const fullCode = useSelector((state: RootState) => state.ComplierSlice.fullCode)
 
+  const { urlId } = useParams();
+
+  useEffect(() => {
+    if (urlId) {
+      setShareData(true)
+    }
+    else {
+      setShareData(false)
+    }
+  }, [urlId])
+
   const handleSaveCode = async () => {
+    setLoading(true)
     try {
       const responseData = await axios.post("http://localhost:4000/compiler/save", {
         fullCode: fullCode
       })
       console.log(responseData?.data)
+      navigate(`/compile/${responseData?.data?.url}`, { replace: true })
     } catch (error) {
       handleError(error)
+    }
+    finally {
+      setLoading(false)
     }
   }
   return (
     <div className='__helper_header h-[50px] bg-black flex items-center p-2 justify-between'>
       <div className='__btn_container flex gap-2 items-center '>
-        <Button variant="success" className='flex justify-center items-center gap-1'><Save size={14} onClick={handleSaveCode} /> Save</Button>
-        <Button variant="secondary" className='flex justify-center items-center gap-1'><Share2 size={14} /> Share</Button>
+        <Button variant="success" className='flex justify-center items-center gap-1' onClick={handleSaveCode} >{loading ? <>
+          <Loader2 className='animate-spin' />saving...</> : (
+          <>
+            <Save size={14} /> Save</>)}</Button>
+
+
+        {shareData && (
+          <Dialog>
+            <DialogTrigger className='whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-9 px-4 py-2 flex justify-center items-center gap-1'>
+              <Share2 size={14} /> Share
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className='flex justify-center items-center gap-1'><Code /> Share Code</DialogTitle>
+                <DialogDescription>
+                  <div className="_Code-share flex gap-1 items-center mt-3">
+                    <input type="text" className='w-full p-2 rounded bg-slate-800 text-slate-500 select-none' disabled
+                      value={window.location.href} />
+                    <Button variant={"outline"} onClick={() => {
+                      window.navigator.clipboard.writeText(window.location.href)
+                      toast("Copy Clipboard Successfully")
+                    }}
+
+                    ><Copy size={14} /></Button>
+                  </div>
+                  <p className='text-center mt-1'>share this URL with your friends to collaborate.</p>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+
+
       </div>
       <div className="__tab_switcher flex justify-center items-center gap-1">
         <small>Current Language</small>
