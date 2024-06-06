@@ -3,6 +3,7 @@ import cors from "cors";
 import { config } from "dotenv";
 import { dbConnect } from "./lib/dbConnect";
 import { CompilerRouter } from "./Routes/CompilerRoutes";
+import { UserRoutes } from "./Routes/UserRoutes";
 const app = express();
 
 
@@ -11,6 +12,7 @@ app.use(cors());
 config();
 
 app.use("/compiler", CompilerRouter);
+app.use("/user", UserRoutes);
 
 dbConnect();
 

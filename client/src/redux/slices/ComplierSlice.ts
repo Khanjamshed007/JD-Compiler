@@ -11,9 +11,9 @@ export interface CompilerInitialState {
 
 const initialState: CompilerInitialState = {
   fullCode: {
-    html: "this is html",
-    css: "this is css",
-    javascript: "this is js",
+    html: '',
+    css: '',
+    javascript: '',
   },
   currentlanguage: "html",
 };
