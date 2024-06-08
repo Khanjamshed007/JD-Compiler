@@ -16,7 +16,7 @@ const Complie = () => {
 
   const loadCode = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/compiler/load", {
+      const response = await axios.post("https://jd-compiler-server.vercel.app/compiler/load", {
         urlId: urlId
       })
       dispatch(updateFullCode(response?.data?.fullCode))
