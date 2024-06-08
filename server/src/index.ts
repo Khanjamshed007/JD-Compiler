@@ -8,7 +8,14 @@ const app = express();
 
 
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: 'https://jd-compiler-client.vercel.app',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 config();
 
 app.use("/compiler", CompilerRouter);
