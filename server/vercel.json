@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "builds": [{ "src": "./index.ts", "use": "@vercel/node" }],
+  "builds": [
+    { "src": "./index.ts", "use": "@vercel/node" }
+  ],
   "routes": [
     {
       "src": "/(.*)",
@@ -10,6 +12,12 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
       },
       "dest": "/"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
